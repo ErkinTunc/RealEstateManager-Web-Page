@@ -1,0 +1,190 @@
+\documentclass{article}
+\usepackage[french]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\usepackage{tikz}
+\usetikzlibrary{shapes,arrows,positioning}
+
+
+\title{Technologies Web Serveur \- L2 \\ Projet}
+\author{Erkin Tunc BOYA}
+\date{Avril 2024}
+
+\begin{document}
+\maketitle
+
+\section{Introduction}
+Vous travaillez pour votre superbe entreprise (UnicornESN), et un nouveau projet vient d'arriver de la part d'un de vos clients travaillant dans l'immobilier. En effet, ce client souhaiterai pouvoir gérer ses actifs immobiliers (des immeubles), ainsi que tenir à jour une liste des occupants.
+
+\section{Les Questions de TP1}
+
+\subsection{Quelles sont les écrans (interfaces) qui vous semblent intéressantes à afficher aux utilisateurs ?}
+\noindent- Liste des appartement d'ou locataire et propriataire vivent.\\
+- Deatile d'un appartement, d'un immeuble et d'un syndicat\\
+- Fiche identite\\
+- Liste des immeuble\\
+- Connexion/Transcription\\
+- Contact(nom,prenom,tel.,email)\\
+
+\subsection{Quelles vont être les tables de votre base de données ?}
+- Immeubles
+- Syndicat
+- Appartement
+- User
+- Occupation 
+- Login\\
+
+\noindent Remarque : \\
+	\indent - 1 immeuble peut avoir plusieur syndicat \\
+	\indent - 1 syndicat peut avoir plusieur immeuble \\
+	\indent - un appartment est toujours dans un seul immeuble(FK immeuble)
+
+
+
+\subsection{Les principales classes d'application par UML }
+
+
+
+\begin{tikzpicture}[auto]
+    % Place nodes
+    \node [draw, rectangle, text width=5cm, minimum height=3cm] (Building) at (-10,0) {
+        \textbf{Building}  \\
+        \begin{tabular}{ll}
+            - buildingId : int  \\
+            - name : String   \\
+            - address : String \\
+            - syndicateId : int \\ \\
+            + getBuildingId() : int \\
+            + getName() : String \\
+            + getAddress() : String \\
+            + getSyndicateId() : int \\ \\
+            + setBuildingId(int) : void \\
+            + setName(String) : void \\
+            + setAddress(String) : void \\
+            + setSyndicateId(int) : void \\
+        \end{tabular}
+    };
+    \node [draw, rectangle, text width=6.5cm, minimum height=3cm, right=of Building] (Syndicate) at (-7,0) {
+        \textbf{Syndicate} \\
+        \begin{tabular}{ll}
+            - syndicateId : int \\
+            - name : String \\
+            - address : String \\
+            - contactPersonName : String \\
+            - contactPhone : String \\
+            - contactEmail : String \\ \\
+            + getSyndicateId() : int \\
+            + getName() : String \\
+            + getAddress() : String \\
+            + getContactPersonName() : String \\
+            + getContactPhone() : String \\
+            + getContactEmail() : String \\ \\
+            + setSyndicateId(int) : void \\
+            + setName(String) : void \\
+            + setAddress(String) : void \\
+            + setContactPersonName(String) : void \\
+            + setContactPhone(String) : void \\
+            + setContactEmail(String) : void \\
+        \end{tabular}
+    };
+    \node [draw, rectangle, text width=5cm, minimum height=3cm, ] (Apartment)at (-10,-10) {
+        \textbf{Apartment} \\
+        \begin{tabular}{ll}
+            - apartmentId : int \\
+            - buildingId : int \\
+            - floor : int \\
+            - number : int \\
+            - size : float \\
+            - isRented : boolean \\ \\
+            + getApartmentId() : int \\
+            + getBuildingId() : int \\
+            + getFloor() : int \\
+            + getNumber() : int \\
+            + getSize() : float \\
+            + isRented() : boolean \\ \\
+            + setApartmentId(int) : void \\
+            + setBuildingId(int) : void \\
+            + setFloor(int) : void \\
+            + setNumber(int) : void \\
+            + setSize(float) : void \\
+            + setRented(boolean) : void \\
+        \end{tabular}
+    };
+    \node [draw, rectangle, text width=5cm, minimum height=3cm, right=of Apartment] (Person) at (-7,-8)  {
+        \textbf{Person(User)} \\
+        \begin{tabular}{ll}
+            - personId : int \\
+            - firstName : String \\
+            - lastName : String \\
+            - phone : String \\ \\
+            + getPersonId() : int \\
+            + getFirstName() : String \\
+            + getLastName() : String \\
+            + getPhone() : String \\ \\
+            + setPersonId(int) : void \\
+            + setFirstName(String) : void \\
+            + setLastName(String) : void \\
+            + setPhone(String) : void \\
+        \end{tabular}
+    };
+    \node [draw, rectangle, text width=7cm, minimum height=3cm, left=of Apartment] (Occupancy)at (2,-14) {
+        \textbf{Occupancy} \\
+        \begin{tabular}{ll}
+            - apartmentId : int \\
+            - personId : int \\
+            - role : Enum('Tenant', 'Owner') \\ \\
+            + getApartmentId() : int \\
+            + getPersonId() : int \\
+            + getRole() : Enum('Tenant', 'Owner') \\ \\
+            + setApartmentId(int) : void \\
+            + setPersonId(int) : void \\
+            + setRole(Enum('Tenant', 'Owner')) : void \\
+        \end{tabular}
+    };
+    % Arrows
+    \draw[->] (Building.east) -- (Syndicate.west);
+    \draw[->] (Apartment.east) -- (Person.west);
+    \draw[->] (Apartment.east) -- (Occupancy.west);
+\end{tikzpicture}
+
+\noindent Il y a aussi \texttt{Login} qui continet le  id, name, last\_name, email, password \\
+Aussi il y a ses getters et setters.
+\newline
+
+\noindent appartement ,immeuble,syndicat,personne\\
+/* classe locataire ou proprietaire herite de personne(abstraite)*/\\
+ apart a list de occupant et personne aussi car un application peut avoir +personne at inversement\\
+ classe occupation : personne appartement et stat()\\
+
+\subsection{Quelles solutions technologiques envisagez vous ?}
+\noindent- Java Spark : Pour gerer notre serveur Web \\
+- FreeMarker : Pour templatiser nos pages HTML \\
+- Base de Donnes H2 : Pour stocker les donées \\
+- Driver JDBC(natif de java) : Pour accéder à la base de données H2. \\
+
+\section{URI's}
+
+\begin{enumerate}
+\item / : Page de entree
+\item /login : Page de connexion
+\item /register : Page d'inscription
+\item /homepage : page de navigation
+\item /buildings : Liste des immeubles
+\item /buildings/{id} : Détails d'un immeuble spécifique
+\item /buildings/{id}/apartments : Liste des appartements pour un immeuble spécifique
+\item /apartments/{id} : Détails d'un appartement spécifique
+\item /apartments/{id}/occupants : Liste des occupants d'un appartement spécifique
+\item /occupants/{id} : Détails d'un occupant spécifique
+\item /statistics : Statistiques sur le parc immobilier total
+\item /buildings/{id}/statistics : Statistiques sur un immeuble spécifique
+\end{enumerate}
+
+
+\subsection{notes du développeur}
+J'ai vous montré mes but sur(avec les URI) mais pas tous marche comme j'attends.
+
+
+
+
+\end{document}
